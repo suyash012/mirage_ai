@@ -95,8 +95,8 @@ async function callOpenRouterAPI(prompt, modelId, stream = false) {
 
   // Model mapping
   const modelMap = {
-    'gpt-5': 'openai/gpt-oss-20b:free',
-    'claude-4': 'google/gemma-3n-e2b-it:free'
+    'gpt-5': 'deepseek/deepseek-r1:free',
+    'claude-4': 'z-ai/glm-4.5-air:free'
   }
 
   const openRouterModel = modelMap[modelId] || 'openai/gpt-oss-20b:free'
