@@ -291,35 +291,35 @@ export default function ChatModal({ onClose }) {
     
     return (
       <div className="modal-overlay animate-fade-in" onClick={onClose}>
-        <div className="modal-content dark-theme animate-slide-up" onClick={e => e.stopPropagation()} style={{ maxWidth: '800px' }}>
+        <div className="modal-content dark-theme animate-slide-up w-full h-full max-w-none max-h-none lg:w-auto lg:h-auto lg:max-w-4xl lg:max-h-[90vh] lg:rounded-2xl" onClick={e => e.stopPropagation()}>
           {/* Full Mode Header */}
-          <div className="flex items-center justify-between p-6 border-b border-gray-700">
+          <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-700">
             <div className="flex items-center gap-3">
               <button
                 onClick={exitFullMode}
                 className="p-2 hover:bg-gray-700 rounded-full transition-colors"
               >
-                <ArrowLeft size={20} className="text-gray-400" />
+                <ArrowLeft size={18} className="lg:w-5 lg:h-5 text-gray-400" />
               </button>
-              <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-800 flex items-center justify-center">
+              <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-lg overflow-hidden bg-gray-800 flex items-center justify-center">
                 <img 
                   src={selectedModelData.icon} 
                   alt={selectedModelData.name}
-                  className="w-6 h-6 object-contain"
+                  className="w-4 h-4 lg:w-6 lg:h-6 object-contain"
                 />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-gray-100">{selectedModelData.name}</h2>
-                <p className="text-sm text-gray-400">Full Chat Mode</p>
+                <h2 className="text-lg lg:text-xl font-semibold text-gray-100">{selectedModelData.name}</h2>
+                <p className="text-xs lg:text-sm text-gray-400">Full Chat Mode</p>
               </div>
             </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-400">
+            <div className="flex items-center gap-2 lg:gap-4">
+              <span className="text-xs lg:text-sm text-gray-400 hidden sm:block">
                 {user?.email}
               </span>
               <button
                 onClick={signOut}
-                className="text-sm text-gray-400 hover:text-gray-200 px-2 py-1 rounded transition-colors"
+                className="text-xs lg:text-sm text-gray-400 hover:text-gray-200 px-2 py-1 rounded transition-colors hidden lg:block"
               >
                 Sign Out
               </button>
@@ -327,21 +327,21 @@ export default function ChatModal({ onClose }) {
                 onClick={onClose}
                 className="p-2 hover:bg-gray-700 rounded-full transition-colors"
               >
-                <X size={20} className="text-gray-400" />
+                <X size={18} className="lg:w-5 lg:h-5 text-gray-400" />
               </button>
             </div>
           </div>
 
           {/* Settings Bar */}
-          <div className="p-4 border-b border-gray-700 bg-gray-800/50">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <label className="text-sm font-medium text-gray-300">Response Mode:</label>
+          <div className="p-3 lg:p-4 border-b border-gray-700 bg-gray-800/50">
+            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 lg:gap-0">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-3 lg:gap-4">
+                <label className="text-xs lg:text-sm font-medium text-gray-300">Response Mode:</label>
                 <div className="relative">
                   <select
                     value={responseMode}
                     onChange={(e) => setResponseMode(e.target.value)}
-                    className="dropdown-select appearance-none pr-8"
+                    className="dropdown-select appearance-none pr-8 text-xs lg:text-sm"
                   >
                     {responseModes.map((mode) => (
                       <option key={mode.id} value={mode.id}>
@@ -484,15 +484,15 @@ export default function ChatModal({ onClose }) {
         </div>
 
         {/* Response Mode Selector */}
-        <div className="p-6 border-b border-gray-700">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <label className="text-sm font-medium text-gray-300">Response Mode:</label>
+        <div className="p-4 lg:p-6 border-b border-gray-700">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 lg:gap-0">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 lg:gap-4">
+              <label className="text-xs lg:text-sm font-medium text-gray-300">Response Mode:</label>
               <div className="relative">
                 <select
                   value={responseMode}
                   onChange={(e) => setResponseMode(e.target.value)}
-                  className="dropdown-select appearance-none pr-8"
+                  className="dropdown-select appearance-none pr-8 text-xs lg:text-sm"
                 >
                   {responseModes.map((mode) => (
                     <option key={mode.id} value={mode.id}>
@@ -500,25 +500,25 @@ export default function ChatModal({ onClose }) {
                     </option>
                   ))}
                 </select>
-                <ChevronDown size={16} className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
+                <ChevronDown size={14} className="lg:w-4 lg:h-4 absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs text-gray-500 hidden lg:block">
                 {responseModes.find(m => m.id === responseMode)?.description}
               </span>
             </div>
             
             {/* Web Search Toggle */}
             <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-gray-300">Web Search:</label>
+              <label className="text-xs lg:text-sm font-medium text-gray-300">Web Search:</label>
               <button
                 onClick={() => setUseWebSearch(!useWebSearch)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                className={`relative inline-flex h-5 w-9 lg:h-6 lg:w-11 items-center rounded-full transition-colors ${
                   useWebSearch ? 'bg-pink-600' : 'bg-gray-600'
                 }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    useWebSearch ? 'translate-x-6' : 'translate-x-1'
+                  className={`inline-block h-3 w-3 lg:h-4 lg:w-4 transform rounded-full bg-white transition-transform ${
+                    useWebSearch ? 'translate-x-5 lg:translate-x-6' : 'translate-x-1'
                   }`}
                 />
               </button>
@@ -530,8 +530,8 @@ export default function ChatModal({ onClose }) {
         </div>
 
         {/* Model Columns */}
-        <div className="flex-1 p-6 overflow-y-auto">
-          <div className="grid grid-cols-3 gap-6 min-h-full">
+        <div className="flex-1 p-3 lg:p-6 overflow-y-auto">
+          <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6 min-h-full">
             {availableModels.map((model) => {
               const response = modelResponses[model.id]
               const isSelected = selectedModel === model.id
@@ -539,12 +539,12 @@ export default function ChatModal({ onClose }) {
               return (
                 <div
                   key={model.id}
-                  className={`model-column ${isSelected ? 'selected' : ''}`}
+                  className={`model-column ${isSelected ? 'selected' : ''} min-h-[300px] lg:min-h-full`}
                 >
                   {/* Model Header */}
-                  <div className="p-4 border-b border-gray-700">
+                  <div className="p-3 lg:p-4 border-b border-gray-700">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="w-8 h-8 rounded-lg overflow-hidden bg-gray-800 flex items-center justify-center">
+                      <div className="w-6 h-6 lg:w-8 lg:h-8 rounded-lg overflow-hidden bg-gray-800 flex items-center justify-center">
                         <img 
                           src={model.icon} 
                           alt={model.name}
@@ -624,28 +624,29 @@ export default function ChatModal({ onClose }) {
         </div>
 
         {/* Input Area */}
-        <div className="input-area p-6">
-          <div className="flex gap-3">
+        <div className="input-area p-4 lg:p-6">
+          <div className="flex flex-col sm:flex-row gap-3">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
               placeholder="Ask me anything..."
-              className="flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500"
+              className="flex-1 px-4 py-3 lg:py-3 bg-gray-800 border border-gray-600 rounded-lg text-gray-100 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 text-base lg:text-sm"
               disabled={isLoading}
             />
             <button
               onClick={handleSendMessage}
               disabled={isLoading || !input.trim()}
-              className="px-6 py-3 bg-pink-600 hover:bg-pink-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all duration-200 flex items-center gap-2"
+              className="px-6 py-3 bg-pink-600 hover:bg-pink-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 whitespace-nowrap min-h-[44px]"
             >
               {isLoading ? (
                 <Loader2 size={18} className="animate-spin" />
               ) : (
                 <Send size={18} />
               )}
-              {isLoading ? 'Generating...' : 'Send'}
+              <span className="hidden sm:inline">{isLoading ? 'Generating...' : 'Send'}</span>
+              <span className="sm:hidden">{isLoading ? '...' : 'Send'}</span>
             </button>
           </div>
         </div>
