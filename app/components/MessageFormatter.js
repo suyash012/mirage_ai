@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
 
-export default function MessageFormatter({ content, isStreaming = false }) {
+export default function MessageFormatter({ content, isStreaming = false, model = null }) {
   const [copied, setCopied] = useState(false)
 
   const copyToClipboard = async () => {
@@ -15,6 +15,9 @@ export default function MessageFormatter({ content, isStreaming = false }) {
       console.error('Failed to copy text: ', err)
     }
   }
+
+  // Check if this is a Claude response
+  const isClaude = model === 'claude-4' || content.includes('Claude') || content.includes('Anthropic')
 
   // Format the content with proper line breaks and structure
   const formatContent = (text) => {
@@ -37,17 +40,29 @@ export default function MessageFormatter({ content, isStreaming = false }) {
             parts.push(str.slice(currentIndex, match.index))
           }
           
-          // Add formatted content
+          // Add formatted content with Claude-specific styling
           if (match[2]) {
-            // Bold text
-            parts.push(<strong key={match.index} className="font-semibold text-white">{match[2]}</strong>)
-          } else if (match[3]) {
-            // Italic text
-            parts.push(<em key={match.index} className="italic text-gray-200">{match[3]}</em>)
-          } else if (match[4]) {
-            // Inline code
+            // Bold text - Claude uses more elegant bold styling
             parts.push(
-              <code key={match.index} className="bg-gray-800 text-pink-400 px-2 py-1 rounded text-sm font-mono">
+              <strong key={match.index} className={isClaude ? "font-semibold text-orange-200" : "font-semibold text-white"}>
+                {match[2]}
+              </strong>
+            )
+          } else if (match[3]) {
+            // Italic text - Claude uses more subtle italic styling
+            parts.push(
+              <em key={match.index} className={isClaude ? "italic text-orange-300/80" : "italic text-gray-200"}>
+                {match[3]}
+              </em>
+            )
+          } else if (match[4]) {
+            // Inline code - Claude uses warmer code highlighting
+            parts.push(
+              <code key={match.index} className={
+                isClaude 
+                  ? "bg-orange-900/30 text-orange-300 px-2 py-1 rounded text-sm font-mono border border-orange-700/30" 
+                  : "bg-gray-800 text-pink-400 px-2 py-1 rounded text-sm font-mono"
+              }>
                 {match[4]}
               </code>
             )
@@ -122,13 +137,21 @@ export default function MessageFormatter({ content, isStreaming = false }) {
             return (
               <div key={index} className="mb-6 w-full -mx-4">
                 <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
-                  <table className="min-w-full border-collapse border border-gray-600 rounded-lg overflow-hidden table-fixed">
+                  <table className={`min-w-full border-collapse border rounded-lg overflow-hidden table-fixed ${
+                    isClaude 
+                      ? 'border-orange-600/50' 
+                      : 'border-gray-600'
+                  }`}>
                     <thead>
-                      <tr className="bg-gray-800">
+                      <tr className={isClaude ? 'bg-orange-900/30' : 'bg-gray-800'}>
                         {headers.map((header, headerIndex) => (
                           <th 
                             key={headerIndex} 
-                            className="border border-gray-600 px-2 py-2 text-left font-semibold text-blue-400 text-xs"
+                            className={`border px-2 py-2 text-left font-semibold text-xs ${
+                              isClaude 
+                                ? 'border-orange-600/50 text-orange-300' 
+                                : 'border-gray-600 text-blue-400'
+                            }`}
                             style={{ width: `${100 / headers.length}%` }}
                           >
                             <div className="break-words overflow-hidden">
@@ -140,11 +163,19 @@ export default function MessageFormatter({ content, isStreaming = false }) {
                     </thead>
                     <tbody>
                       {rows.map((row, rowIndex) => (
-                        <tr key={rowIndex} className={rowIndex % 2 === 0 ? 'bg-gray-900/50' : 'bg-gray-800/30'}>
+                        <tr key={rowIndex} className={
+                          isClaude
+                            ? (rowIndex % 2 === 0 ? 'bg-orange-950/30' : 'bg-orange-900/20')
+                            : (rowIndex % 2 === 0 ? 'bg-gray-900/50' : 'bg-gray-800/30')
+                        }>
                           {row.map((cell, cellIndex) => (
                             <td 
                               key={cellIndex} 
-                              className="border border-gray-600 px-2 py-2 text-gray-200 align-top text-xs"
+                              className={`border px-2 py-2 align-top text-xs ${
+                                isClaude 
+                                  ? 'border-orange-600/50 text-orange-100' 
+                                  : 'border-gray-600 text-gray-200'
+                              }`}
                               style={{ width: `${100 / headers.length}%` }}
                             >
                               <div className="break-words overflow-hidden leading-tight">
@@ -178,7 +209,11 @@ export default function MessageFormatter({ content, isStreaming = false }) {
           .trim()
         
         return (
-          <blockquote key={index} className="border-l-4 border-pink-500 pl-6 py-2 italic text-gray-300 my-6 bg-gray-800/30 rounded-r-lg">
+          <blockquote key={index} className={`border-l-4 pl-6 py-2 italic my-6 rounded-r-lg ${
+            isClaude 
+              ? 'border-orange-500 text-orange-200 bg-orange-900/20' 
+              : 'border-pink-500 text-gray-300 bg-gray-800/30'
+          }`}>
             {formatInlineText(quoteContent)}
           </blockquote>
         )
@@ -192,12 +227,12 @@ export default function MessageFormatter({ content, isStreaming = false }) {
           const text = headerMatch[2]
           const HeaderTag = `h${Math.min(level, 6)}`
           const sizeClasses = {
-            1: 'text-2xl font-bold text-blue-400 mb-4',
-            2: 'text-xl font-bold text-blue-300 mb-3',
-            3: 'text-lg font-semibold text-blue-200 mb-3',
-            4: 'text-base font-semibold text-gray-200 mb-2',
-            5: 'text-sm font-semibold text-gray-300 mb-2',
-            6: 'text-sm font-medium text-gray-400 mb-2'
+            1: isClaude ? 'text-2xl font-bold text-orange-300 mb-4' : 'text-2xl font-bold text-blue-400 mb-4',
+            2: isClaude ? 'text-xl font-bold text-orange-300 mb-3' : 'text-xl font-bold text-blue-300 mb-3',
+            3: isClaude ? 'text-lg font-semibold text-orange-200 mb-3' : 'text-lg font-semibold text-blue-200 mb-3',
+            4: isClaude ? 'text-base font-semibold text-orange-200 mb-2' : 'text-base font-semibold text-gray-200 mb-2',
+            5: isClaude ? 'text-sm font-semibold text-orange-300 mb-2' : 'text-sm font-semibold text-gray-300 mb-2',
+            6: isClaude ? 'text-sm font-medium text-orange-400 mb-2' : 'text-sm font-medium text-gray-400 mb-2'
           }
           
           return (
@@ -236,7 +271,9 @@ export default function MessageFormatter({ content, isStreaming = false }) {
                 
                 return (
                   <div key={lineIndex} className="flex items-start gap-3 mb-3">
-                    <span className="text-blue-400 mt-1 flex-shrink-0 font-bold">•</span>
+                    <span className={`mt-1 flex-shrink-0 font-bold ${
+                      isClaude ? 'text-orange-400' : 'text-blue-400'
+                    }`}>•</span>
                     <span className="flex-1 leading-relaxed">{formatInlineText(cleanedListItem)}</span>
                   </div>
                 )
@@ -261,8 +298,14 @@ export default function MessageFormatter({ content, isStreaming = false }) {
               if (partIndex % 2 === 1) {
                 // This is a code block
                 return (
-                  <pre key={partIndex} className="bg-gray-800 border border-gray-700 rounded-lg p-4 my-3 overflow-x-auto">
-                    <code className="text-green-400 text-sm font-mono whitespace-pre">
+                  <pre key={partIndex} className={`border rounded-lg p-4 my-3 overflow-x-auto ${
+                    isClaude 
+                      ? 'bg-orange-950/40 border-orange-700/40' 
+                      : 'bg-gray-800 border-gray-700'
+                  }`}>
+                    <code className={`text-sm font-mono whitespace-pre ${
+                      isClaude ? 'text-orange-300' : 'text-green-400'
+                    }`}>
                       {part.trim()}
                     </code>
                   </pre>

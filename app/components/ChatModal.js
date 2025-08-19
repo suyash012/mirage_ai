@@ -401,7 +401,8 @@ export default function ChatModal({ onClose }) {
                       <div className="flex-1 min-w-0">
                         <MessageFormatter 
                           content={message.content} 
-                          streaming={message.streaming}
+                          isStreaming={message.streaming}
+                          model={message.type === 'ai' ? selectedModel : null}
                         />
                         {message.streaming && (
                           <div className="flex items-center gap-1 mt-2">
@@ -586,7 +587,8 @@ export default function ChatModal({ onClose }) {
                             <div className="text-gray-200 text-sm leading-relaxed w-full">
                               <MessageFormatter 
                                 content={response.response} 
-                                streaming={false}
+                                isStreaming={false}
+                                model={model.id}
                               />
                             </div>
                           )}

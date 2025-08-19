@@ -491,6 +491,7 @@ export default function FullChatMode() {
                                 <MessageFormatter 
                                   content={message.content} 
                                   isStreaming={message.streaming}
+                                  model={message.type === 'ai' ? model.id : null}
                                 />
                               </div>
                               {message.streaming && (
@@ -610,6 +611,7 @@ export default function FullChatMode() {
                               <MessageFormatter 
                                 content={message.content} 
                                 isStreaming={message.streaming}
+                                model={message.type === 'ai' ? model.id : null}
                               />
                             </div>
                             {message.streaming && (

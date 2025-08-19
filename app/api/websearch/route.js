@@ -114,7 +114,7 @@ async function searchWithBing(query) {
 
 export async function POST(request) {
   try {
-    const { query } = await request.json()
+    const { query, stream = false } = await request.json()
 
     if (!query || query.trim().length === 0) {
       return NextResponse.json(
@@ -123,22 +123,107 @@ export async function POST(request) {
       )
     }
 
-    // Try Serper first, then Bing, then fallback
-    let searchResults
-    
-    if (SERPER_API_KEY) {
-      searchResults = await searchWithSerper(query)
-    } else if (BING_API_KEY) {
-      searchResults = await searchWithBing(query)
-    } else {
-      searchResults = await fallbackSearch(query)
-    }
+    if (stream) {
+      // Return streaming response
+      const encoder = new TextEncoder()
 
-    return NextResponse.json({
-      success: true,
-      query,
-      ...searchResults
-    })
+      const streamResponse = new ReadableStream({
+        async start(controller) {
+          try {
+            // Send initial search status
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
+              type: 'search_start', 
+              query: query,
+              status: 'Starting web search...' 
+            })}\n\n`))
+
+            // Perform the search
+            let searchResults
+            
+            if (SERPER_API_KEY) {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
+                type: 'search_progress', 
+                status: 'Searching with Google...' 
+              })}\n\n`))
+              searchResults = await searchWithSerper(query)
+            } else if (BING_API_KEY) {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
+                type: 'search_progress', 
+                status: 'Searching with Bing...' 
+              })}\n\n`))
+              searchResults = await searchWithBing(query)
+            } else {
+              controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
+                type: 'search_progress', 
+                status: 'Using fallback search...' 
+              })}\n\n`))
+              searchResults = await fallbackSearch(query)
+            }
+
+            // Stream search results one by one
+            if (searchResults.results && searchResults.results.length > 0) {
+              for (let i = 0; i < searchResults.results.length; i++) {
+                const result = searchResults.results[i]
+                controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
+                  type: 'search_result', 
+                  result: result,
+                  index: i + 1,
+                  total: searchResults.results.length
+                })}\n\n`))
+                
+                // Add small delay between results for streaming effect
+                await new Promise(resolve => setTimeout(resolve, 100))
+              }
+            }
+
+            // Send search completion with metadata
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
+              type: 'search_complete', 
+              searchInfo: searchResults.searchInfo,
+              totalResults: searchResults.results?.length || 0,
+              query: query
+            })}\n\n`))
+
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ done: true })}\n\n`))
+            controller.close()
+
+          } catch (error) {
+            console.error('Streaming search error:', error)
+            controller.enqueue(encoder.encode(`data: ${JSON.stringify({ 
+              type: 'error', 
+              error: error.message,
+              done: true 
+            })}\n\n`))
+            controller.close()
+          }
+        }
+      })
+
+      return new Response(streamResponse, {
+        headers: {
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache',
+          'Connection': 'keep-alive',
+        },
+      })
+    } else {
+      // Non-streaming response (original behavior)
+      let searchResults
+      
+      if (SERPER_API_KEY) {
+        searchResults = await searchWithSerper(query)
+      } else if (BING_API_KEY) {
+        searchResults = await searchWithBing(query)
+      } else {
+        searchResults = await fallbackSearch(query)
+      }
+
+      return NextResponse.json({
+        success: true,
+        query,
+        ...searchResults
+      })
+    }
 
   } catch (error) {
     console.error('Web search error:', error)
