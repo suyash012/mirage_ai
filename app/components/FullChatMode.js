@@ -279,34 +279,43 @@ export default function FullChatMode() {
   }
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 flex overflow-hidden">
+    <div className="h-screen h-dvh bg-gradient-to-br from-gray-950 via-gray-900 to-gray-950 flex overflow-hidden">
       {/* Mobile Menu Overlay with improved visibility */}
       {mobileMenuOpen && (
         <div 
-          className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden"
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 md:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
 
-      {/* Enhanced Sidebar with improved contrast */}
-      <div className={`${sidebarCollapsed ? 'w-16' : 'w-80'} ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} fixed md:relative z-50 md:z-auto bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 border-r border-pink-400/30 flex flex-col flex-shrink-0 transition-all duration-300 h-full shadow-2xl shadow-pink-500/20`}>
-        {/* Header with improved contrast */}
-        <div className="p-6 border-b border-pink-400/40 flex-shrink-0 bg-gradient-to-r from-gray-950 to-gray-900 shadow-lg">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl flex items-center justify-center animate-pulse-glow shadow-lg shadow-pink-500/50">
-                <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+      {/* Enhanced Sidebar with improved contrast and mobile optimization */}
+      <div className={`${sidebarCollapsed ? 'w-16' : 'w-72 md:w-80'} ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'} fixed md:relative z-50 md:z-auto bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 border-r border-pink-400/30 flex flex-col flex-shrink-0 transition-all duration-300 h-full max-h-screen shadow-2xl shadow-pink-500/20`}>
+        {/* Header with improved contrast and mobile optimization */}
+        <div className="p-4 md:p-6 border-b border-pink-400/40 flex-shrink-0 bg-gradient-to-r from-gray-950 to-gray-900 shadow-lg">
+          <div className="flex items-center justify-between mb-4 md:mb-6">
+            <div className="flex items-center gap-2 md:gap-3">
+              <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg md:rounded-xl flex items-center justify-center animate-pulse-glow shadow-lg shadow-pink-500/50">
+                <svg className="w-4 h-4 md:w-6 md:h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
                   <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
                 </svg>
               </div>
-              {!sidebarCollapsed && <h1 className="text-xl font-bold text-white"> Mirage AI</h1>}
+              {!sidebarCollapsed && <h1 className="text-lg md:text-xl font-bold text-white"> Mirage AI</h1>}
             </div>
-            <button
-              onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
-              className="p-2 text-pink-400 hover:text-pink-300 transition-colors rounded-lg hover:bg-pink-500/10"
-            >
-              <ChevronDown size={16} className={`transform transition-transform ${sidebarCollapsed ? 'rotate-90' : '-rotate-90'}`} />
-            </button>
+            <div className="flex items-center gap-2">
+              {/* Mobile close button */}
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="md:hidden p-2 text-pink-400 hover:text-pink-300 transition-colors rounded-lg hover:bg-pink-500/10"
+              >
+                <X size={18} />
+              </button>
+              <button
+                onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+                className="hidden md:block p-2 text-pink-400 hover:text-pink-300 transition-colors rounded-lg hover:bg-pink-500/10"
+              >
+                <ChevronDown size={16} className={`transform transition-transform ${sidebarCollapsed ? 'rotate-90' : '-rotate-90'}`} />
+              </button>
+            </div>
           </div>
           {!sidebarCollapsed && (
             <Link href="/" className="flex items-center gap-2 text-pink-400 hover:text-pink-300 transition-all duration-200 text-sm hover:translate-x-1">
@@ -316,61 +325,64 @@ export default function FullChatMode() {
           )}
         </div>
 
-        {/* Chat List with improved background */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0 bg-gradient-to-b from-gray-900/30 via-gray-900/20 to-gray-950/40">
+        {/* Chat List with improved background and mobile optimization */}
+        <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-2 md:space-y-3 min-h-0 bg-gradient-to-b from-gray-900/30 via-gray-900/20 to-gray-950/40">
           {chats.map((chat) => (
             <button
               key={chat.id}
-              onClick={() => switchChat(chat.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 text-left rounded-xl transition-all duration-200 group ${
+              onClick={() => {
+                switchChat(chat.id)
+                setMobileMenuOpen(false) // Close mobile menu on selection
+              }}
+              className={`w-full flex items-center gap-2 md:gap-3 px-3 md:px-4 py-2.5 md:py-3 text-left rounded-lg md:rounded-xl transition-all duration-200 group ${
                 chat.active 
-                  ? 'bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-xl shadow-pink-500/40 border border-pink-400/50' 
+                  ? 'bg-gradient-to-r from-pink-500 to-pink-600 text-white shadow-lg md:shadow-xl shadow-pink-500/40 border border-pink-400/50' 
                   : 'text-gray-200 hover:bg-gradient-to-r hover:from-pink-500/15 hover:to-pink-600/10 hover:text-white hover:border hover:border-pink-400/30 border border-transparent'
               } ${sidebarCollapsed ? 'justify-center' : ''}`}
               title={sidebarCollapsed ? chat.name : ''}
             >
-              <MessageCircle size={16} className="flex-shrink-0" />
+              <MessageCircle size={14} className="md:w-4 md:h-4 flex-shrink-0" />
               {!sidebarCollapsed && (
-                <span className="font-medium truncate text-left flex-1">{chat.name}</span>
+                <span className="font-medium truncate text-left flex-1 text-sm md:text-base">{chat.name}</span>
               )}
               {!sidebarCollapsed && chat.active && (
-                <div className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></div>
+                <div className="w-1.5 h-1.5 md:w-2 md:h-2 bg-pink-500 rounded-full animate-pulse"></div>
               )}
             </button>
           ))}
         </div>
 
-        {/* New Chat Button */}
-        <div className="p-4">
+        {/* New Chat Button - Mobile optimized */}
+        <div className="p-3 md:p-4">
           <button
             onClick={createNewChat}
-            className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-center gap-2'} bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-4 py-3 rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-xl shadow-pink-500/40 border border-pink-400/50`}
+            className={`w-full flex items-center ${sidebarCollapsed ? 'justify-center' : 'justify-center gap-2'} bg-gradient-to-r from-pink-500 to-pink-600 hover:from-pink-600 hover:to-pink-700 text-white px-3 md:px-4 py-2.5 md:py-3 rounded-lg md:rounded-xl font-semibold transition-all duration-300 hover:scale-105 shadow-lg md:shadow-xl shadow-pink-500/40 border border-pink-400/50 text-sm md:text-base`}
             style={{ boxShadow: '0 4px 15px rgba(236, 72, 153, 0.3)' }}
             title={sidebarCollapsed ? 'New Chat' : ''}
           >
-            <Plus size={16} />
+            <Plus size={14} className="md:w-4 md:h-4" />
             {!sidebarCollapsed && 'New Chat'}
           </button>
         </div>
 
-        {/* User Profile with improved contrast */}
-        <div className="p-4 border-t border-pink-400/40 bg-gradient-to-r from-gray-950 to-gray-900 flex-shrink-0 shadow-inner">
-          <div className={`flex items-center gap-3 mb-3 ${sidebarCollapsed ? 'justify-center' : ''}`}>
-            <div className="w-10 h-10 bg-gradient-to-r from-pink-500 to-pink-600 rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/30">
-              <User size={18} className="text-white" />
+        {/* User Profile with improved contrast and mobile optimization */}
+        <div className="p-3 md:p-4 border-t border-pink-400/40 bg-gradient-to-r from-gray-950 to-gray-900 flex-shrink-0 shadow-inner">
+          <div className={`flex items-center gap-2 md:gap-3 mb-2 md:mb-3 ${sidebarCollapsed ? 'justify-center' : ''}`}>
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-gradient-to-r from-pink-500 to-pink-600 rounded-lg md:rounded-xl flex items-center justify-center shadow-lg shadow-pink-500/30">
+              <User size={16} className="md:w-5 md:h-5 text-white" />
             </div>
             {!sidebarCollapsed && (
               <>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-white truncate">
+                  <p className="text-xs md:text-sm font-semibold text-white truncate">
                     {user?.email?.split('@')[0] || 'User'}
                   </p>
                   <p className="text-xs text-gray-400 flex items-center gap-1">
-                    <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                    <span className="w-1.5 h-1.5 md:w-2 md:h-2 bg-green-500 rounded-full"></span>
                     Online
                   </p>
                 </div>
-                <Settings size={16} className="text-pink-400 hover:text-pink-300 cursor-pointer transition-colors" />
+                <Settings size={14} className="md:w-4 md:h-4 text-pink-400 hover:text-pink-300 cursor-pointer transition-colors" />
               </>
             )}
           </div>
@@ -385,21 +397,21 @@ export default function FullChatMode() {
         </div>
       </div>
 
-      {/* Main Chat Area */}
+      {/* Main Chat Area - Mobile optimized */}
       <div className="flex-1 flex flex-col bg-black min-w-0 overflow-hidden">
-        {/* Mobile Header */}
-        <div className="md:hidden flex items-center justify-between p-4 bg-black/80 border-b border-pink-500/30">
+        {/* Mobile Header - Enhanced */}
+        <div className="md:hidden flex items-center justify-between p-3 bg-black/80 border-b border-pink-500/30 backdrop-blur-sm">
           <button
             onClick={() => setMobileMenuOpen(true)}
             className="p-2 text-pink-400 hover:text-pink-300 transition-colors rounded-lg hover:bg-pink-500/10"
           >
-            <Menu size={20} />
+            <Menu size={18} />
           </button>
-          <h1 className="text-lg font-bold text-white">NexusChat AI</h1>
+          <h1 className="text-base font-bold text-white">Mirage AI</h1>
           <div className="w-10" /> {/* Spacer for centering */}
         </div>
-        {/* Model Columns */}
-        <div className={`flex-1 ${showSingleModel ? 'flex' : 'lg:grid lg:grid-cols-3 lg:gap-px flex flex-col'} bg-black min-h-0 overflow-hidden`}>
+        {/* Model Columns - Mobile: Vertical stack, Desktop: Grid */}
+        <div className={`flex-1 ${showSingleModel ? 'flex' : 'flex flex-col lg:grid lg:grid-cols-3 lg:gap-px'} bg-black min-h-0 overflow-hidden`}>
           {showSingleModel ? (
             // Single Model View
             (() => {
@@ -525,55 +537,55 @@ export default function FullChatMode() {
               )
             })()
           ) : (
-            // Comparison View - Mobile: Horizontal scroll, Desktop: Grid
-            <div className="flex lg:contents overflow-x-auto lg:overflow-x-visible snap-x snap-mandatory lg:snap-none">
+            // Comparison View - Mobile: Vertical stack, Desktop: Grid
+            <div className="mobile-model-stack lg:contents lg:grid lg:grid-cols-3 lg:gap-px overflow-y-auto lg:overflow-y-visible">
               {availableModels.map((model) => (
-                <div key={model.id} className="bg-black flex flex-col min-h-0 overflow-hidden min-w-[85vw] lg:min-w-0 snap-start lg:snap-align-none flex-shrink-0 lg:flex-shrink border-r border-gray-800 lg:border-r-0">
+                <div key={model.id} className="mobile-model-item bg-black flex flex-col min-h-0 overflow-hidden lg:min-w-0 border-b border-gray-800 lg:border-b-0 lg:border-r lg:border-gray-800 lg:last:border-r-0">
                   {/* Enhanced Model Header with improved visibility */}
-                  <div className="p-4 lg:p-6 border-b border-pink-400/40 flex-shrink-0 bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 shadow-lg">
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className="w-8 h-8 lg:w-10 lg:h-10 bg-gradient-to-br from-pink-600 to-pink-700 rounded-xl flex items-center justify-center overflow-hidden shadow-lg shadow-pink-500/30">
+                  <div className="p-3 lg:p-6 border-b border-pink-400/40 flex-shrink-0 bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 shadow-lg">
+                    <div className="flex items-center gap-2 lg:gap-3 mb-2 lg:mb-3">
+                      <div className="w-6 h-6 lg:w-10 lg:h-10 bg-gradient-to-br from-pink-600 to-pink-700 rounded-lg lg:rounded-xl flex items-center justify-center overflow-hidden shadow-lg shadow-pink-500/30">
                         <img 
                           src={model.icon} 
                           alt={model.name}
-                          className="w-5 h-5 lg:w-7 lg:h-7 object-contain"
+                          className="w-4 h-4 lg:w-7 lg:h-7 object-contain"
                         />
                       </div>
                       <div className="flex-1">
-                        <h3 className="font-bold text-white text-base lg:text-lg">{model.name}</h3>
-                        <div className="flex items-center gap-2 mt-1">
-                          <div className="w-2 h-2 bg-pink-500 rounded-full animate-pulse"></div>
+                        <h3 className="font-bold text-white text-sm lg:text-lg">{model.name}</h3>
+                        <div className="flex items-center gap-1 lg:gap-2 mt-1">
+                          <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-pink-500 rounded-full animate-pulse"></div>
                           <span className="text-xs text-pink-400">Ready</span>
                         </div>
                       </div>
                     </div>
-                    <p className="text-xs lg:text-sm text-gray-300 mb-4 bg-black/50 border border-pink-500/20 rounded-lg p-2 lg:p-3">{model.description}</p>
+                    <p className="text-xs lg:text-sm text-gray-300 mb-2 lg:mb-4 bg-black/50 border border-pink-500/20 rounded-lg p-2 lg:p-3">{model.description}</p>
                     
                     {/* Select Button */}
                     {conversations[model.id].length > 0 && conversations[model.id].some(msg => msg.type === 'ai' && !msg.streaming && !msg.error) && (
                       <button
                         onClick={() => selectModel(model.id)}
-                        className="w-full px-3 py-2 lg:px-4 lg:py-3 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white text-xs lg:text-sm rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:scale-105"
+                        className="w-full px-3 py-2 lg:px-4 lg:py-3 bg-gradient-to-r from-pink-600 to-pink-700 hover:from-pink-700 hover:to-pink-800 text-white text-xs lg:text-sm rounded-lg lg:rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:scale-105"
                       >
-                        <MessageCircle size={14} className="lg:w-4 lg:h-4" />
+                        <MessageCircle size={12} className="lg:w-4 lg:h-4" />
                         Focus on {model.name}
                       </button>
                     )}
                   </div>
 
-                  {/* Enhanced Messages */}
-                  <div className="flex-1 overflow-y-auto p-3 lg:p-6 space-y-3 lg:space-y-6 min-h-0" style={{ scrollBehavior: 'smooth' }}>
+                  {/* Enhanced Messages - Mobile optimized height */}
+                  <div className="mobile-messages lg:flex-1 overflow-y-auto p-2 lg:p-6 space-y-2 lg:space-y-6 min-h-[200px] lg:min-h-0 max-h-[400px] lg:max-h-none custom-scrollbar" style={{ scrollBehavior: 'smooth' }}>
                     {conversations[model.id].length === 0 && (
                       <div className="flex items-center justify-center h-full text-gray-500 text-center">
-                        <div className="bg-gradient-to-br from-black to-gray-900 border border-pink-500/20 rounded-2xl p-6 lg:p-10 max-w-sm mx-auto shadow-xl shadow-pink-500/10">
-                          <div className="w-12 h-12 lg:w-18 lg:h-18 bg-gradient-to-br from-pink-600 to-pink-700 rounded-2xl flex items-center justify-center mx-auto mb-4 lg:mb-6 shadow-xl shadow-pink-500/30">
+                        <div className="bg-gradient-to-br from-black to-gray-900 border border-pink-500/20 rounded-xl lg:rounded-2xl p-4 lg:p-10 max-w-sm mx-auto shadow-xl shadow-pink-500/10">
+                          <div className="w-10 h-10 lg:w-18 lg:h-18 bg-gradient-to-br from-pink-600 to-pink-700 rounded-xl lg:rounded-2xl flex items-center justify-center mx-auto mb-3 lg:mb-6 shadow-xl shadow-pink-500/30">
                             <img 
                               src={model.icon} 
                               alt={model.name}
-                              className="w-8 h-8 lg:w-12 lg:h-12 object-contain"
+                              className="w-6 h-6 lg:w-12 lg:h-12 object-contain"
                             />
                           </div>
-                          <h4 className="text-sm lg:text-base font-semibold text-white mb-2">{model.name}</h4>
+                          <h4 className="text-xs lg:text-base font-semibold text-white mb-2">{model.name}</h4>
                           <p className="text-gray-400 text-xs lg:text-sm">Waiting for your first message...</p>
                         </div>
                       </div>
@@ -587,28 +599,28 @@ export default function FullChatMode() {
                     >
                       <div className={`message-bubble-enhanced group ${
                         message.type === 'user' 
-                          ? 'user-bubble-enhanced' 
+                          ? 'user-bubble-enhanced max-w-[85%] lg:max-w-[80%]' 
                           : message.error 
-                            ? 'ai-bubble-enhanced border-red-500/50 bg-red-900/20'
-                            : 'ai-bubble-enhanced'
+                            ? 'ai-bubble-enhanced border-red-500/50 bg-red-900/20 max-w-[90%] lg:max-w-[80%]'
+                            : 'ai-bubble-enhanced max-w-[90%] lg:max-w-[80%]'
                       }`}>
-                        <div className="flex items-start gap-3">
+                        <div className="flex items-start gap-2 lg:gap-3">
                           {message.type === 'ai' && (
-                            <div className="w-7 h-7 bg-gradient-to-br from-black to-gray-800 border border-pink-500/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 overflow-hidden shadow-md">
+                            <div className="w-6 h-6 lg:w-7 lg:h-7 bg-gradient-to-br from-black to-gray-800 border border-pink-500/30 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 overflow-hidden shadow-md">
                               <img 
                                 src={model.icon} 
                                 alt={model.name}
-                                className="w-4 h-4 object-contain"
+                                className="w-3.5 h-3.5 lg:w-4 lg:h-4 object-contain"
                               />
                             </div>
                           )}
                           {message.type === 'user' && (
-                            <div className="w-7 h-7 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-md shadow-pink-500/30">
-                              <User size={14} className="text-white" />
+                            <div className="w-6 h-6 lg:w-7 lg:h-7 bg-gradient-to-br from-pink-500 to-pink-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-md shadow-pink-500/30">
+                              <User size={12} className="lg:w-4 lg:h-4 text-white" />
                             </div>
                           )}
                           <div className="flex-1 min-w-0">
-                            <div className="message-content-enhanced">
+                            <div className="message-content-enhanced text-sm lg:text-base">
                               <MessageFormatter 
                                 content={message.content} 
                                 isStreaming={message.streaming}
@@ -646,22 +658,22 @@ export default function FullChatMode() {
           )}
         </div>
 
-        {/* Enhanced Input Area with better contrast */}
-        <div className="border-t border-pink-400/40 p-3 lg:p-6 flex-shrink-0 bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 shadow-2xl shadow-pink-500/10">
-          {/* Controls */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-4 lg:mb-6 gap-4 lg:gap-0">
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4 lg:gap-8">
-              {/* Response Mode */}
-              <div className="flex items-center gap-3">
-                <span className="text-xs lg:text-sm font-semibold text-pink-300 flex items-center gap-2">
-                  <Settings size={14} className="lg:w-4 lg:h-4" />
+        {/* Enhanced Input Area with better contrast - Mobile optimized */}
+        <div className="border-t border-pink-400/40 p-3 md:p-4 lg:p-6 flex-shrink-0 bg-gradient-to-r from-gray-950 via-gray-900 to-gray-950 shadow-2xl shadow-pink-500/10">
+          {/* Controls - Mobile responsive */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-3 md:mb-4 lg:mb-6 gap-3 md:gap-4 lg:gap-0">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4 lg:gap-8">
+              {/* Response Mode - Mobile responsive */}
+              <div className="flex items-center gap-2 md:gap-3">
+                <span className="text-xs lg:text-sm font-semibold text-pink-300 flex items-center gap-1 md:gap-2">
+                  <Settings size={12} className="md:w-4 md:h-4" />
                   Mode:
                 </span>
                 <div className="relative">
                   <select
                     value={responseMode}
                     onChange={(e) => setResponseMode(e.target.value)}
-                    className="bg-gray-900/90 border border-pink-400/40 rounded-xl px-3 py-1.5 lg:px-4 lg:py-2 text-xs lg:text-sm text-gray-100 appearance-none pr-8 lg:pr-10 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-200 backdrop-blur-sm focus-ring"
+                    className="bg-gray-900/90 border border-pink-400/40 rounded-lg md:rounded-xl px-2.5 py-1.5 md:px-3 md:py-1.5 lg:px-4 lg:py-2 text-xs lg:text-sm text-gray-100 appearance-none pr-6 md:pr-8 lg:pr-10 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500 transition-all duration-200 backdrop-blur-sm focus-ring min-w-0"
                   >
                     {responseModes.map((mode) => (
                       <option key={mode.id} value={mode.id}>
@@ -669,25 +681,25 @@ export default function FullChatMode() {
                       </option>
                     ))}
                   </select>
-                  <ChevronDown size={14} className="lg:w-4 lg:h-4 absolute right-2 lg:right-3 top-1/2 transform -translate-y-1/2 text-pink-400 pointer-events-none" />
+                  <ChevronDown size={12} className="md:w-4 md:h-4 absolute right-1.5 md:right-2 lg:right-3 top-1/2 transform -translate-y-1/2 text-pink-400 pointer-events-none" />
                 </div>
               </div>
               
-              {/* Web Search Toggle */}
-              <div className="flex items-center gap-3">
-                <span className="text-xs lg:text-sm font-semibold text-pink-300 flex items-center gap-2">
-                  <Search size={14} className="lg:w-4 lg:h-4" />
+              {/* Web Search Toggle - Mobile responsive */}
+              <div className="flex items-center gap-2 md:gap-3">
+                <span className="text-xs lg:text-sm font-semibold text-pink-300 flex items-center gap-1 md:gap-2">
+                  <Search size={12} className="md:w-4 md:h-4" />
                   Web Search:
                 </span>
                 <button
                   onClick={() => setUseWebSearch(!useWebSearch)}
-                  className={`relative inline-flex h-6 w-10 lg:h-7 lg:w-12 items-center rounded-full transition-all duration-300 ${
+                  className={`relative inline-flex h-5 w-8 md:h-6 md:w-10 lg:h-7 lg:w-12 items-center rounded-full transition-all duration-300 ${
                     useWebSearch ? 'bg-gradient-to-r from-pink-500 to-pink-600 shadow-lg shadow-pink-500/30' : 'bg-black border border-pink-500/30'
                   }`}
                 >
                   <span
-                    className={`inline-block h-4 w-4 lg:h-5 lg:w-5 transform rounded-full bg-white transition-transform duration-300 shadow-md ${
-                      useWebSearch ? 'translate-x-5 lg:translate-x-6' : 'translate-x-1'
+                    className={`inline-block h-3.5 w-3.5 md:h-4 md:w-4 lg:h-5 lg:w-5 transform rounded-full bg-white transition-transform duration-300 shadow-md ${
+                      useWebSearch ? 'translate-x-3.5 md:translate-x-5 lg:translate-x-6' : 'translate-x-0.5 md:translate-x-1'
                     }`}
                   />
                 </button>

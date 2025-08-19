@@ -291,13 +291,13 @@ export default function ChatModal({ onClose }) {
     
     return (
       <div className="modal-overlay animate-fade-in" onClick={onClose}>
-        <div className="modal-content dark-theme animate-slide-up w-full h-full max-w-none max-h-none lg:w-auto lg:h-auto lg:max-w-4xl lg:max-h-[90vh] lg:rounded-2xl" onClick={e => e.stopPropagation()}>
-          {/* Full Mode Header */}
-          <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-700">
-            <div className="flex items-center gap-3">
+        <div className="modal-content dark-theme animate-slide-up w-full h-full max-w-none max-h-none md:w-auto md:h-auto md:max-w-4xl md:max-h-[90vh] md:rounded-2xl" onClick={e => e.stopPropagation()}>
+          {/* Full Mode Header - Mobile responsive */}
+          <div className="flex items-center justify-between p-3 md:p-4 lg:p-6 border-b border-gray-700">
+            <div className="flex items-center gap-2 md:gap-3">
               <button
                 onClick={exitFullMode}
-                className="p-2 hover:bg-gray-700 rounded-full transition-colors"
+                className="p-1.5 md:p-2 hover:bg-gray-700 rounded-full transition-colors"
               >
                 <ArrowLeft size={18} className="lg:w-5 lg:h-5 text-gray-400" />
               </button>
@@ -454,31 +454,31 @@ export default function ChatModal({ onClose }) {
   return (
     <div className="modal-overlay animate-fade-in" onClick={onClose}>
       <div className="modal-content dark-theme animate-slide-up" onClick={e => e.stopPropagation()}>
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-700">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
+        {/* Header - Mobile responsive */}
+        <div className="flex items-center justify-between p-4 lg:p-6 border-b border-gray-700">
+          <div className="flex items-center gap-2 lg:gap-3">
+            <div className="w-6 h-6 lg:w-8 lg:h-8 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center">
+              <svg className="w-4 h-4 lg:w-5 lg:h-5 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm0 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1v-2z" clipRule="evenodd" />
               </svg>
             </div>
-            <h2 className="text-xl font-semibold text-gray-100">AI Model Comparison</h2>
+            <h2 className="text-lg lg:text-xl font-semibold text-gray-100">AI Model Comparison</h2>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-400">
+          <div className="flex items-center gap-2 lg:gap-4">
+            <span className="text-xs lg:text-sm text-gray-400 hidden sm:block">
               {user?.email}
             </span>
             <button
               onClick={signOut}
-              className="text-sm text-gray-400 hover:text-gray-200 px-2 py-1 rounded transition-colors"
+              className="text-xs lg:text-sm text-gray-400 hover:text-gray-200 px-2 py-1 rounded transition-colors hidden sm:block"
             >
               Sign Out
             </button>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-700 rounded-full transition-colors"
+              className="p-1.5 lg:p-2 hover:bg-gray-700 rounded-full transition-colors"
             >
-              <X size={20} className="text-gray-400" />
+              <X size={18} className="lg:w-5 lg:h-5 text-gray-400" />
             </button>
           </div>
         </div>
@@ -529,9 +529,9 @@ export default function ChatModal({ onClose }) {
           </div>
         </div>
 
-        {/* Model Columns */}
+        {/* Model Columns - Mobile: Vertical stack, Desktop: Grid */}
         <div className="flex-1 p-3 lg:p-6 overflow-y-auto">
-          <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 lg:gap-6 min-h-full">
+          <div className="mobile-model-stack lg:grid lg:grid-cols-3 gap-3 lg:gap-6 min-h-full">
             {availableModels.map((model) => {
               const response = modelResponses[model.id]
               const isSelected = selectedModel === model.id
@@ -539,7 +539,7 @@ export default function ChatModal({ onClose }) {
               return (
                 <div
                   key={model.id}
-                  className={`model-column ${isSelected ? 'selected' : ''} min-h-[300px] lg:min-h-full`}
+                  className={`mobile-model-item model-column ${isSelected ? 'selected' : ''} min-h-[250px] lg:min-h-full`}
                 >
                   {/* Model Header */}
                   <div className="p-3 lg:p-4 border-b border-gray-700">

@@ -1,6 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { AuthProvider } from './providers/AuthProvider'
+import MobileOptimizations from './components/MobileOptimizations'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -43,7 +44,7 @@ export const metadata = {
     images: ['/og-image.png'],
     creator: '@MirageAI',
   },
-  viewport: 'width=device-width, initial-scale=1',
+  viewport: 'width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no',
   themeColor: '#ec4899',
 }
 
@@ -51,6 +52,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
+        <MobileOptimizations />
         <AuthProvider>
           {children}
         </AuthProvider>
